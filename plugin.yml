@@ -1,0 +1,8 @@
+name: Explosion
+version: 1.0
+api-version: 1.13
+main: me.tro.Explosion.Main
+author: trotro
+description: A explosion plugin!
+ 
+commands:

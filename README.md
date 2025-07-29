@@ -1,60 +1,120 @@
-# Explosion
+# Explosion Plugin
 
-A Minecraft plugin that creates explosions when players walk on grass blocks.
-
-## Description
-
-Explosion is a simple yet entertaining Minecraft plugin that creates explosions whenever a player walks on a grass block. The plugin monitors player movement and triggers a powerful explosion (with a power level of 5) when a player is detected standing on a grass block.
+A Minecraft plugin that creates explosions when players look at grass blocks within a 5-block radius.
 
 ## Features
 
-- **Grass Detection**: Automatically detects when players are standing on grass blocks
-- **Instant Explosions**: Creates immediate explosions at the player's location
-- **Configurable Power**: Current explosion power is set to 5 (medium-sized explosion)
-
-## Installation
-
-1. Download the latest version of the plugin from the releases page
-2. Place the JAR file in your server's `plugins` folder
-3. Restart your server or use a plugin manager to load the plugin
-4. No additional configuration required - the plugin works immediately after installation
-
-## Usage
-
-Simply walk on grass blocks in-game, and explosions will automatically trigger at your location. Be careful where you step!
-
-## Technical Details
-
-- **Plugin Name**: Explosion
-- **Version**: 1.0
-- **API Version**: 1.13+
-- **Main Class**: me.tro.Explosion.Main
-- **Author**: trotro (troaxx)
-
-## Code Structure
-
-- `Main.java` - The main plugin class that handles initialization and event registration
-- `PlayerMovementListener.java` - Event listener that detects player movement and triggers explosions
-- `plugin.yml` - Plugin metadata and configuration file
+* **Smart Detection**: Creates explosions when players look directly at grass blocks (within 5 blocks)
+* **Powerful Impact**: Generates explosions with power level 5
+* **Block Breaking**: Explosions can break blocks and cause damage
+* **No Configuration Needed**: Works right out of the box
 
 ## Requirements
 
-- Bukkit/Spigot/Paper server (compatible with API version 1.13 or higher)
-- Players should be careful around grass areas!
+* Java 8 or higher
+* Minecraft server 1.19.x (Paper, Spigot, or Bukkit)
+* Maven (for building from source)
 
-## Permissions
+## Quick Start
 
-This plugin does not implement any permission nodes.
+1. Download the latest `Explosion-1.0-SNAPSHOT.jar` from the releases
+2. Place it in your server's `plugins` folder
+3. Restart your server
+4. Look at any grass block within 5 blocks to create an explosion!
 
-## Commands
+## Building from Source
 
-This plugin does not implement any commands.
+### Prerequisites
+1. Install Java 8 or higher
+2. Install Maven
+3. Clone this repository
 
+### Build Steps
+```bash
+# Clone the repository
+git clone https://github.com/Troaxx/Explosion.git
+
+# Navigate to project directory
+cd Explosion
+
+# Build with Maven
+mvn clean package
+```
+
+The compiled JAR will be in the `target` folder as `Explosion-1.0-SNAPSHOT.jar`
+
+## Implementation Details
+
+### How it Works
+The plugin uses the following mechanics:
+1. Monitors player movement using `PlayerMoveEvent`
+2. Uses `player.getTargetBlockExact(5)` to check what block the player is looking at
+3. If the target block is a grass block, creates an explosion using `World.createExplosion()`
+
+### Key Classes
+- `Main.java`: Plugin initialization and event registration
+  ```java
+  public class Main extends JavaPlugin {
+      @Override
+      public void onEnable() {
+          getServer().getPluginManager().registerEvents(new PlayerMovementListener(), this);
+      }
+  }
+  ```
+
+- `PlayerMovementListener.java`: Handles explosion logic
+  ```java
+  @EventHandler
+  public void onPlayerMove(PlayerMoveEvent event) {
+      Player player = event.getPlayer();
+      Block targetBlock = player.getTargetBlockExact(5);
+
+      if (targetBlock != null && targetBlock.getType() == Material.GRASS_BLOCK) {
+          player.getWorld().createExplosion(targetBlock.getLocation(), 5F, true, true);
+      }
+  }
+  ```
+
+## Configuration
+
+No configuration is needed! The plugin works with these default settings:
+- Detection range: 5 blocks
+- Explosion power: 5.0
+- Block damage: Enabled
+- Entity damage: Enabled
+
+## Troubleshooting
+
+1. **Plugin doesn't load**
+   - Check server logs for errors
+   - Verify you're using Minecraft 1.19.x
+   - Ensure the JAR is in the plugins folder
+
+2. **No explosions**
+   - Make sure you're looking directly at grass blocks
+   - Verify you're within 5 blocks of the target
+   - Check if other plugins are preventing explosions
+
+3. **Build fails**
+   - Ensure Maven is properly installed
+   - Check your Java version (Java 8+)
+   - Try running `mvn clean install` for detailed error messages
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Disclaimer
+## Safety Warning ⚠️
 
-This plugin can cause significant terrain damage. Use responsibly on servers where griefing is allowed or where land protection plugins are in place.
+This plugin can cause significant terrain damage. Use with caution and consider:
+- Using world protection plugins
+- Setting up protected regions
+- Backing up your world regularly

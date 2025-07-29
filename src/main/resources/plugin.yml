@@ -1,0 +1,6 @@
+name: Explosion
+version: '${project.version}'
+main: me.tro.Explosion.Main
+api-version: '1.19'
+author: trotro
+description: A plugin that creates explosions when players look at grass blocks 
